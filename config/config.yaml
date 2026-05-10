@@ -1,0 +1,45 @@
+data:
+  root: data/example_images
+  image_size: 64
+  channels: 3
+  normalize: minus_one_to_one
+  batch_size: 8
+
+embedding:
+  type: sinusoidal
+  dimension: 128
+
+model:
+  architecture: unet
+  image_size: 64
+  image_channels: 3
+  filters: [32, 64, 128, 256]
+  num_res_blocks: 2
+  attention_resolutions: [16]
+  num_heads: 4
+
+diffusion:
+  timesteps: 1000
+  noise_schedule: linear
+  prediction_type: epsilon
+  loss_type: mse
+
+training:
+  optimizer: adamw
+  learning_rate: 1e-4
+  max_steps: 100
+  device: cuda
+
+logging:
+  log_interval: 100
+  metrics: [train_loss, gradient_norm]
+  visualization:
+    show_denoising_process: true
+    num_denoising_steps: 6
+    timesteps_to_show: [1000, 800, 600, 400, 200, 0]
+    num_samples: 4
+
+evaluation:
+  enabled: false
+  visualization:
+    show_denoising_process: false
