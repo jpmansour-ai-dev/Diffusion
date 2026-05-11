@@ -5,12 +5,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-
 channels_per_group = config["channels_per_group"]
 
 def num_groups(channels: int) -> int:
     return channels // channels_per_group
-
 
 
 class ResBlock(nn.Module):
