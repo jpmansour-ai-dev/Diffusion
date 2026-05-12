@@ -6,14 +6,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-<<<<<<< HEAD
 _config_path = Path(__file__).parent.parent / "config" / "config.yaml"
 with open(_config_path, "r") as f:
     config = yaml.safe_load(f)
 channels_per_group = config["model"]["channels_per_group"]
-=======
-channels_per_group = config["channels_per_group"]
->>>>>>> f91ccd74f8de18cac93be1707add034373105f46
 
 def num_groups(channels: int) -> int:
     return channels // channels_per_group
