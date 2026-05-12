@@ -1,16 +1,18 @@
-import config
+from pathlib import Path
+import yaml
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 
-
-channels_per_group = config["channels_per_group"]
+_config_path = Path(__file__).parent.parent / "config" / "config.yaml"
+with open(_config_path, "r") as f:
+    config = yaml.safe_load(f)
+channels_per_group = config["model"]["channels_per_group"]
 
 def num_groups(channels: int) -> int:
     return channels // channels_per_group
-
 
 
 class ResBlock(nn.Module):
