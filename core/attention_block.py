@@ -43,7 +43,6 @@ class AttentionBlock(nn.Module):
         # In the same token, the idea is to group together the same pixel across all feature maps 
         # to take into account all of the characteristics, after convolutional layer.
 
-
         # self-attention : Q = K = V = tokens
         # Output : Each token is replaced by a weighted combination of all other tokens
         out, _ = self.attention(tokens, tokens, tokens, need_weights=False)
