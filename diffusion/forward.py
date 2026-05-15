@@ -1,12 +1,11 @@
-
 import torch
 
 # Noise schedule
 T              = 1000
-beta_0         = 0.0001  # added noise variance at t=0
-beta_T_minus_1 = 0.02    # added noise variance at t=T-1
-beta_t         = torch.linspace(beta_0, beta_T_minus_1, T)  # Linear interpolation; shape (T,)
-alphas_cumprod = torch.cumprod(1 - beta_t, dim=0) # ᾱₜ = ∏_{i=0}^{t} (1 - β_i) 
+beta_0         = 0.0001   # added noise variance at t=0
+beta_T_minus_1 = 0.02     # added noise variance at t=T-1
+beta_t         = torch.linspace(beta_0, beta_T_minus_1, T)   # Linear interpolation; shape (T,)
+alphas_cumprod = torch.cumprod(1 - beta_t, dim=0)   # ᾱₜ = ∏_{i=0}^{t} (1 - β_i) 
 
 
 # Forward diffusion process:
