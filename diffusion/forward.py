@@ -1,5 +1,6 @@
 import torch
 
+
 # Noise schedule
 T              = 1000
 beta_0         = 0.0001   # added noise variance at t=0
