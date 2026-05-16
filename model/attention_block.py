@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from residual_block import num_groups
+from model.residual_block import num_groups
 
 
 class AttentionBlock(nn.Module):

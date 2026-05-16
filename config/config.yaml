@@ -13,9 +13,10 @@ model:
   architecture: unet
   image_size: 64
   image_channels: 3
-  filters: [32, 64, 128, 256]
-  num_res_blocks: 2
-  attention_resolutions: [16]
+  channels_per_level: [32, 64, 128, 256]     # number of feature maps at each encoder level
+  num_res_per_level: 2
+  channels_per_group: 32
+  attention_resolutions: [16, 8]
   num_heads: 4
 
 diffusion:
@@ -26,7 +27,7 @@ diffusion:
 
 training:
   optimizer: adamw
-  learning_rate: 1e-4
+  learning_rate: 1e-3
   max_steps: 100
   device: cuda
 
