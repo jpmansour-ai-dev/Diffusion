@@ -6,7 +6,7 @@ from diffusion.forward import T, forward_diffusion
 
 
 def fit(model, loader: DataLoader, epochs: int = 5):
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=2e-4)
     device    = next(model.parameters()).device
     model.train()
 
