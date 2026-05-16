@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from diffusion.forward import T, forward_diffusion
 
 
-def fit(model, loader: DataLoader, epochs: int = 5):
+def fit(model, loader: DataLoader, epochs: int = 5, max_batches: int | None = None):
     optimizer = torch.optim.AdamW(model.parameters(), lr=2e-4)
     device    = next(model.parameters()).device
     model.train()
@@ -15,7 +15,10 @@ def fit(model, loader: DataLoader, epochs: int = 5):
     for epoch in range(epochs):
         running, steps = 0.0, 0
 
-        for x_0, _ in loader:
+        for batch_idx, (x_0, _) in enumerate(loader):
+            if max_batches is not None and batch_idx >= max_batches:
+                break
+
             x_0 = x_0.to(device)
             t   = torch.randint(0, T, (x_0.shape[0],))   # CPU — indexes schedule tensors
             eps = torch.randn_like(x_0)
@@ -31,7 +34,7 @@ def fit(model, loader: DataLoader, epochs: int = 5):
             running += loss.item()
             steps   += 1
 
-        avg = running / steps
+        avg = running / max(steps, 1)
         losses.append(avg)
         print(f"Epoch {epoch+1}/{epochs} — loss: {avg:.4f}")
 
