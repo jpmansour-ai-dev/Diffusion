@@ -11,6 +11,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Device: {device}")
 
 loader = get_celeba_loader(batch_size=8)
+
 model  = UNet().to(device)
 print(f"Parameters: {sum(p.numel() for p in model.parameters()):,}")
 
