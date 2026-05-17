@@ -5,10 +5,6 @@ from torch.utils.data import DataLoader
 from diffusion.forward import T, forward_diffusion
 
 
-def _default_device() -> torch.device:
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
 def fit(
     model: torch.nn.Module,
     loader: DataLoader,
@@ -19,13 +15,17 @@ def fit(
     device: torch.device | str | None = None,
 ) -> list[float]:
     """Train the noise predictor with the standard DDPM epsilon objective."""
-    device = torch.device(device) if device is not None else _default_device()
+    if device is None:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = torch.device(device)
     model.to(device)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
     model.train()
 
     losses = []
+    parameters = sum(p.numel() for p in model.parameters())
+    print(f"{model.__class__.__name__} parameters: {parameters:,}")
 
     for epoch in range(epochs):
         running, steps = 0.0, 0
