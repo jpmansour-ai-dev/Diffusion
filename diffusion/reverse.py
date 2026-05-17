@@ -1,5 +1,7 @@
 import torch
-from diffusion.forward import T, beta, alpha, ab
+
+from diffusion.forward import T, ab, alpha, beta
+
 
 ab_prev = torch.cat([torch.ones(1), ab[:-1]])
 beta_tilde = beta * (1 - ab_prev) / (1 - ab)
@@ -8,30 +10,29 @@ sqrt_recip_alpha = (1 / alpha).sqrt()
 sqrt_one_minus_ab = (1 - ab).sqrt()
 
 
-def _validate_shape(shape: tuple) -> None:
-    assert isinstance(shape, (tuple, list)) and len(shape) == 4
+def _validate_shape(shape: tuple[int, int, int, int]) -> None:
+    if not isinstance(shape, tuple) or len(shape) != 4:
+        raise ValueError("shape must be a tuple (batch, channels, height, width)")
+    if any(dim <= 0 for dim in shape):
+        raise ValueError(f"all shape dimensions must be positive, got {shape}")
 
 
-def images_to_uint8_grid(x: torch.Tensor, nrow: int | None = None):
-    """Convert a batch in [-1, 1] to a uint8 image grid."""
-    import numpy as np
-
-    if nrow is None:
-        nrow = x.shape[0]
-
-    imgs = (x.detach().clamp(-1, 1) + 1) / 2
-    rows = []
-    for start in range(0, imgs.shape[0], nrow):
-        rows.append(torch.cat([img for img in imgs[start:start + nrow]], dim=2))
-    grid = torch.cat(rows, dim=1)
-    return (grid.permute(1, 2, 0).cpu().numpy() * 255).astype("uint8")
+def _model_device(model) -> torch.device:
+    return next(model.parameters()).device
 
 
 @torch.no_grad()
 def reverse_step(model, x_t: torch.Tensor, t: int) -> torch.Tensor:
-    """One denoising step: p_theta(x_{t-1} | x_t)."""
-    eps = model(x_t, torch.full((x_t.shape[0],), t, dtype=torch.long, device=x_t.device))
-    assert eps.shape == x_t.shape
+    """Draw one sample from p_theta(x_{t-1} | x_t)."""
+    if not 0 <= t < T:
+        raise ValueError(f"t must be in [0, {T - 1}], got {t}")
+
+    t_batch = torch.full((x_t.shape[0],), t, dtype=torch.long, device=x_t.device)
+    eps = model(x_t, t_batch)
+    if eps.shape != x_t.shape:
+        raise ValueError(
+            f"model output must match x_t shape {tuple(x_t.shape)}, got {tuple(eps.shape)}"
+        )
 
     mu = sqrt_recip_alpha[t].item() * (
         x_t - beta[t].item() / sqrt_one_minus_ab[t].item() * eps
@@ -43,81 +44,15 @@ def reverse_step(model, x_t: torch.Tensor, t: int) -> torch.Tensor:
 
 
 @torch.no_grad()
-def sample(model, shape: tuple, device: torch.device) -> torch.Tensor:
-    """Full reverse diffusion: x_T ~ N(0, I) to x_0."""
+def sample(
+    model,
+    shape: tuple[int, int, int, int],
+    device: torch.device | str | None = None,
+) -> torch.Tensor:
+    """Generate x_0 by starting from Gaussian noise and denoising for T steps."""
     _validate_shape(shape)
+    device = torch.device(device) if device is not None else _model_device(model)
     x = torch.randn(shape, device=device)
     for t in reversed(range(T)):
         x = reverse_step(model, x, t)
     return x
-
-
-@torch.no_grad()
-def sample_to_gif(
-    model,
-    shape: tuple,
-    device: torch.device,
-    gif_path: str = "denoising.gif",
-    capture_every: int = 50,
-    restart_pause: int = 8,
-) -> None:
-    """Save a looping GIF that runs from noise to clean, then restarts."""
-    from PIL import Image
-
-    _validate_shape(shape)
-    x = torch.randn(shape, device=device)
-    frames = []
-
-    def to_frame(batch):
-        return Image.fromarray(images_to_uint8_grid(batch, nrow=shape[0]))
-
-    for t in reversed(range(T)):
-        if t % capture_every == 0:
-            frames.append(to_frame(x))
-        x = reverse_step(model, x, t)
-
-    final_frame = to_frame(x)
-    frames.append(final_frame)
-    frames.extend([final_frame.copy() for _ in range(restart_pause)])
-
-    frames[0].save(
-        gif_path,
-        save_all=True,
-        append_images=frames[1:],
-        duration=80,
-        loop=0,
-    )
-
-
-@torch.no_grad()
-def sample_progressive(
-    model,
-    shape: tuple,
-    device: torch.device,
-    timesteps_to_show: list | None = None,
-) -> dict:
-    """Return snapshots at selected reverse-process noise levels.
-
-    t=1000 is the initial pure noise sample for a 1000-step schedule.
-    t=0 is the final generated sample.
-    """
-    _validate_shape(shape)
-    if timesteps_to_show is None:
-        timesteps_to_show = [500, 400, 300, 200, 100, 0]
-
-    timesteps_to_show = sorted(set(timesteps_to_show), reverse=True)
-    x = torch.randn(shape, device=device)
-    snapshots = {}
-
-    if T in timesteps_to_show:
-        snapshots[T] = x.clone()
-
-    for t in reversed(range(T)):
-        if (t + 1) in timesteps_to_show:
-            snapshots[t + 1] = x.clone()
-        x = reverse_step(model, x, t)
-
-    if 0 in timesteps_to_show:
-        snapshots[0] = x.clone()
-
-    return snapshots
