@@ -7,7 +7,7 @@ The aim here is to give a Pytorch demonstration of what diffusion models are cap
 ## Concept 
 The idea consists on smoothly perturbating the original image data $x_0$ by iteratively adding Gaussian noise until reaching pure noise $x_T$, then learning to reverse this process to generate new data from pure noise. Here is what noising looks like:
 
-INSERT NOISING IMAGE HERE
+![Diffusion](assets/diffusion.png)
 
 ### Forward Diffusion:
 
