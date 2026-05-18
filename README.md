@@ -9,8 +9,23 @@ The idea consists on smoothly perturbating the original image data $x_0$ by iter
 
 INSERT NOISING IMAGE HERE
 
-**Properties:** 
-\item The diffusion process is a Markov chain, meaning the noised image at timestep $x_t$ depends only on the previous step $x_{t-1}$, and not on any earlier steps $x_{t-2}, \dots, x_0$.
+**Forward Diffusion:**
+
+Let:
+- $x_0$ be an image sampled from a distribution $q$
+- $\beta_1, \dots, \beta_T \in (0, 1)$ be a known variance schedule
+
+The forward diffusion process for $t = 1, 2, \dots, T$ is defined as:
+
+$$q(x_t \mid x_{t-1}) = \mathcal{N}(x_t ; \sqrt{1 - \beta_t}\, x_{t-1},\ \beta_t \mathbf{I})$$
+
+**Properties:**
+- The diffusion process is a Markov chain, meaning the noised image at timestep $x_t$ depends only on the previous step $x_{t-1}$, and not on any earlier steps $x_{t-2}, \dots, x_0$.
+- It can be shown that we can sample $x_t$ directly from $x_0$ in closed form:
+
+$$q(x_t \mid x_0) = \mathcal{N}(x_t ; \sqrt{\bar{\alpha}_t}\, x_0,\ (1 - \bar{\alpha}_t) \mathbf{I})$$
+
+where $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s$ 
 
 
 
