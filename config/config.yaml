@@ -1,5 +1,4 @@
 data:
-  root: data/example_images
   image_size: 64
   channels: 3
   normalize: minus_one_to_one
