@@ -80,7 +80,7 @@ The paper showed, that the cosine schedule yields better results, especially for
 
 When training the U-Net, each sample in the batch is at a different timestep, so statistics across the batch are unstable. Training large diffusion models demands small batch sizes due to memory constraints, making batch statistics even noisier. Unlike BatchNorm which normalizes across the batch for each fixed feature map, GroupNorm splits the feature map into groups of channels and normalizes within each group across channels, height and width, making it independent of batch size.
 
-![Group Normalization](assets/grp_norm.jpg)
+![Group Normalization](assets/grpnorm.png)
 
 <br>
 
@@ -89,6 +89,8 @@ When training the U-Net, each sample in the batch is at a different timestep, so
 The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. They are fed to the model in batches of 64 during training. <br> Diffusion is a type of self-supervised learning algorithm, meaning it learns from unlabeled data , by exploiting the inherent structure of raw data to generate pseudo-labels, in our case, the noise $\varepsilon$ diffused at each timestep according to the known noise schedule, which the model is trained to predict.
 
 ## Results
+
+Diffusion models are objectively inherently expensive to train. For the sake of this demonstration, image resolution is reduced to 64×64, the maximum number of channels in the UNet is set to 256, and training is run for 65 epochs. The learning rate is set to $2 \times 10^{-4}$, following the original paper. The figure below shows 4 generated samples captured across 6 denoising timesteps:
 
 ## References
 
