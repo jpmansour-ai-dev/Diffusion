@@ -17,7 +17,7 @@ model:
   num_res_per_level: 2
   channels_per_group: 32
   attention_resolutions: [16, 8]
-  num_heads: 8
+  num_heads: 4
 
 diffusion:
   timesteps: 1000
