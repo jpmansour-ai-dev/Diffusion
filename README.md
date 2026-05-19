@@ -17,7 +17,7 @@ Let:
 
 The forward diffusion process for $t = 1, 2, \dots, T$ is defined as:
 
-$$q(x_t \mid x_{t-1}) = \mathcal{N}(x_t ; \sqrt{1 - \beta_t} x_{t-1} \beta_t \mathbf{I})$$
+$$q(x_t \mid x_{t-1}) = \mathcal{N}(x_t ; \sqrt{1 - \beta_t} x_{t-1}\, \beta_t \mathbf{I})$$
 
 **Properties:**
 - The diffusion process is a Markov chain, meaning the noised image at timestep $x_t$ depends only on the previous step $x_{t-1}$, and not on any earlier steps $x_{t-2}, \dots, x_0$.
