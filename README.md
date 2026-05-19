@@ -72,5 +72,8 @@ The paper showed, that the cosine schedule yields better results, especially for
 
 When training the U-Net, each sample in the batch is at a different timestep, so statistics across the batch are unstable. Training large diffusion models demands small batch sizes due to memory constraints, making batch statistics even noisier. Unlike BatchNorm which normalizes across the batch for each fixed feature map, GroupNorm splits the feature map into groups of channels and normalizes within each group across channels, height and width, making it independent of batch size.
 
-![Group Normalization](assets/grp.png)
+![Group Normalization](assets/grp_norm.png)
 
+### Dataset:
+
+The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. 
