@@ -3,7 +3,7 @@
   image_size: 64
   channels: 3
   normalize: minus_one_to_one
-  batch_size: 64
+  batch_size: 8
 
 embedding:
   type: sinusoidal
