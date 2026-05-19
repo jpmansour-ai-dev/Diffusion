@@ -87,3 +87,18 @@ When training the U-Net, each sample in the batch is at a different timestep, so
 ## Dataset:
 
 The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. They are fed to the model in batches of 64 during training. <br> Diffusion is a type of self-supervised learning algorithm, meaning it learns from unlabeled data , by exploiting the inherent structure of raw data to generate pseudo-labels, in our case, the noise $\varepsilon$ diffused at each timestep according to the known noise schedule, which the model is trained to predict.
+
+## Results
+
+## References
+
+[1] Ho, J., Jain, A., & Abbeel, P. (2020). [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239)
+
+[2] Nichol, A., & Dhariwal, P. (2021). [Improved Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2102.09672)
+
+[3] Liu, Z., Luo, P., Wang, X., & Tang, X. (2015). [Deep Learning Face Attributes in the Wild](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). ICCV.
+
+[4] [Diffusion Models](http://laurent.risser.free.fr/TEACHING/Talk_diffusion_models.pdf)
+
+[5] [pytorch_diffusion](https://github.com/pesser/pytorch_diffusion) — Pesser, P. GitHub repository.
+
