@@ -1,13 +1,18 @@
+﻿import math
 import torch
 
 
-T          = 1000
-beta_start = 1e-4
-beta_end   = 0.02
+T = 1000
+# Defining the cosine schedule:
+s = 0.008
+f = torch.cos(
+    (torch.arange(T + 1, dtype=torch.float64) / T + s) / (1 + s) * math.pi / 2
+    ) ** 2
+alpha_bar = (f / f[0]).float()[1:]
+beta = (1 - alpha_bar / torch.cat([torch.ones(1), alpha_bar[:-1]])).clamp(max=0.999)
+alpha = 1 - beta
 
-beta      = torch.linspace(beta_start, beta_end, T)
-alpha     = 1 - beta
-alpha_bar = torch.cumprod(alpha, dim=0)
+
 
 
 def forward_diffusion(
@@ -30,4 +35,5 @@ def forward_diffusion(
         t.to(device=x_0.device, dtype=torch.long)
     ].view(-1, 1, 1, 1)
     return alpha_bar_t.sqrt() * x_0 + (1 - alpha_bar_t).sqrt() * eps
+
 
