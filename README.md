@@ -86,4 +86,4 @@ When training the U-Net, each sample in the batch is at a different timestep, so
 
 ## Dataset:
 
-The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. They are fed to the model in batches of 64 during training. <br> Since diffusion is a type of self-supervised learning algorithm, 
+The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. They are fed to the model in batches of 64 during training. <br> Diffusion is a type of self-supervised learning algorithm, meaning it learns from unlabeled data , by exploiting the inherent structure of raw data to generate pseudo-labels, in our case, the noise $\varepsilon$ diffused at each timestep according to the known noise schedule, which the model is trained to predict.
