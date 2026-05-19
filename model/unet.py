@@ -75,9 +75,6 @@ class UNet(nn.Module):
         self.mid_res_2 = ResBlock(mid_channels, mid_channels, mlp_dim)
 
         # ── Decoder ──────────────────────────────────────────────────────────
-        # Mirror of the encoder, but in reverse order.
-        # (num_res_per_level + 1) ResBlocks per level — the +1 consumes the downsample skip.
-        # Each ResBlock input = (current h channels) + (skip channels), concatenated.
         self.dec_res_blocks  = nn.ModuleList()    # will hold Residual Blocks
         self.dec_attn_blocks = nn.ModuleList()    # will hold AttentionBlocks (or Identity)
         self.up_blocks       = nn.ModuleList()    # will hold Upsample blocks
@@ -99,27 +96,24 @@ class UNet(nn.Module):
 
                 in_channels = out_channels
 
-            # Upsample on every level except the last one (level 0, full resolution)
+            # Upsample on every level except the last one
             if level > 0:
                 self.up_blocks.append(Upsample(in_channels))
 
         # ── Output conv ──────────────────────────────────────────────────────
-        # GroupNorm → SiLU → Conv back to image_channels (predicts noise ε)
         self.out_norm = nn.GroupNorm(num_groups(in_channels), in_channels)
         self.out_act  = nn.SiLU()
         self.out_conv = nn.Conv2d(in_channels, img_channels, kernel_size=3, padding=1)
 
     def forward(self, x: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
-        # x: (B, image_channels, H, W)  — noisy image
-        # t: (B,)                        — integer timesteps
 
-        # 1. Time embedding
+        # Time embedding
         t_emb = self.time_embedding(t)                  # (B, 512)
 
-        # 2. Input conv
+        # Input convolution
         h = self.input_conv(x)                          # (B, 32, 64, 64)
 
-        # 3. Encoder — run blocks, save skips
+        # Encoder
         skips    = [h]
         enc_idx  = 0
         down_idx = 0
@@ -140,7 +134,7 @@ class UNet(nn.Module):
         h = self.mid_attn(h)
         h = self.mid_res_2(h, t_emb)
 
-        # 5. Decoder — pop skips, concat, run blocks
+        # 5. Decoder
         dec_idx = 0
         up_idx  = 0
 
@@ -156,7 +150,7 @@ class UNet(nn.Module):
                 h = self.up_blocks[up_idx](h)
                 up_idx += 1
 
-        # 6. Output conv
+        # 6. Output convolution
         h = self.out_norm(h)
         h = self.out_act(h)
         h = self.out_conv(h)

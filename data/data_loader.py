@@ -1,14 +1,14 @@
-import torch
+﻿import torch
 from datasets import load_dataset
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 
 
-CELEBA_DATASET = "flwrlabs/celeba"
-IMAGE_SIZE = 64
+celeba_dataset_path = "flwrlabs/celeba"
+resolution = 64
 
 
-def build_transform(image_size: int = IMAGE_SIZE) -> transforms.Compose:
+def preprocess(image_size: int = resolution) -> transforms.Compose:
     """Resize CelebA images and normalize RGB channels to [-1, 1]."""
     return transforms.Compose(
         [
@@ -21,32 +21,33 @@ def build_transform(image_size: int = IMAGE_SIZE) -> transforms.Compose:
 
 
 class CelebADataset(Dataset):
-    """CelebA split as tensors ready for diffusion training."""
-
-    def __init__(self, split: str = "train", image_size: int = IMAGE_SIZE) -> None:
-        self.dataset = load_dataset(CELEBA_DATASET, split=split)
-        self.transform = build_transform(image_size)
+    """Loads and preprocesses CelebA images for model training."""
+    def __init__(self, split: str = "train", image_size: int = resolution) -> None:
+        self.dataset = load_dataset(celeba_dataset_path, split=split)
+        self.transform = preprocess(image_size)
 
     def __len__(self):
         return len(self.dataset)
 
-    def __getitem__(self, idx):
-        image = self.dataset[idx]["image"].convert("RGB")
-        return self.transform(image), 0
+    def __getitem__(self, sample_index):
+        return self.transform(self.dataset[sample_index]["image"].convert("RGB"))
 
 
-def get_celeba_loader(
-    batch_size: int = 8,
-    num_workers: int = 2,
-    split: str = "train",
-    image_size: int = IMAGE_SIZE,
-    shuffle: bool = True,
-) -> DataLoader:
-    dataset = CelebADataset(split=split, image_size=image_size)
+def get_celeba_loader(batch_size: int = 64) -> DataLoader:
+    """Returns a DataLoader of preprocessed CelebA images."""
+    dataset = CelebADataset(split="train", image_size=resolution)
     return DataLoader(
         dataset,
         batch_size=batch_size,
-        shuffle=shuffle,
-        num_workers=num_workers,
+        shuffle=True,
+        num_workers=2,
         pin_memory=torch.cuda.is_available(),
     )
+
+
+
+
+
+
+
+

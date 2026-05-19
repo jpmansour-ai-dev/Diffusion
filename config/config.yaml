@@ -1,4 +1,5 @@
-data:
+﻿data:
+  dataset: celeba
   image_size: 64
   channels: 3
   normalize: minus_one_to_one
@@ -12,7 +13,7 @@ model:
   architecture: unet
   image_size: 64
   image_channels: 3
-  channels_per_level: [64, 128, 256, 512]
+  channels_per_level: [32, 64, 128, 256]
   num_res_per_level: 2
   channels_per_group: 32
   attention_resolutions: [16, 8]
@@ -43,3 +44,4 @@ evaluation:
   enabled: false
   visualization:
     show_denoising_process: false
+

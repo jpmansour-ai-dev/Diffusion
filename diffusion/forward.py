@@ -1,14 +1,13 @@
 import math
-
 import torch
 
 
 T = 1000
+# Defining the cosine schedule:
 s = 0.008
-
-f     = torch.cos((torch.arange(T + 1, dtype=torch.float64) / T + s) / (1 + s) * math.pi / 2) ** 2
-ab    = (f / f[0]).float()[1:]               # ᾱ_1 … ᾱ_T
-beta  = (1 - ab / torch.cat([torch.ones(1), ab[:-1]])).clamp(max=0.999)
+f = torch.cos((torch.arange(T + 1, dtype=torch.float64) / T + s) / (1 + s) * math.pi / 2) ** 2
+alpha_bar = (f / f[0]).float()[1:]              
+beta = (1 - alpha_bar / torch.cat([torch.ones(1), alpha_bar[:-1]])).clamp(max=0.999)
 alpha = 1 - beta
 
 
@@ -28,7 +27,7 @@ def forward_diffusion(
             f"epsilon must match x_0 shape {tuple(x_0.shape)}, got {tuple(eps.shape)}"
         )
 
-    ab_t = ab.to(device=x_0.device, dtype=x_0.dtype)[
+    alpha_bar_t = alpha_bar.to(device=x_0.device, dtype=x_0.dtype)[
         t.to(device=x_0.device, dtype=torch.long)
     ].view(-1, 1, 1, 1)
-    return ab_t.sqrt() * x_0 + (1 - ab_t).sqrt() * eps
+    return alpha_bar_t.sqrt() * x_0 + (1 - alpha_bar_t).sqrt() * eps
