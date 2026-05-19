@@ -39,8 +39,11 @@ While $q(x_{t-1} \mid x_t)$ is unknown, the $q(x_{t-1} \mid x_t, x_0)$ is known 
 
 $$p_{\theta}(x_{t-1} \mid x_t) = \mathcal{N}(x_{t-1}\ ; \mu_\theta(x_t, t),\ \tilde\beta_t \mathbf{I})$$
 
+<br>
+
 ![Diffusion2](assets/diffusion.png)
 
+<br>
 <br>
 
 **Noise Schedule:**
