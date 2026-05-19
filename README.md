@@ -98,7 +98,9 @@ The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.htm
 
 [3] Liu, Z., Luo, P., Wang, X., & Tang, X. (2015). [Deep Learning Face Attributes in the Wild](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). ICCV.
 
-[4] [Diffusion Models](http://laurent.risser.free.fr/TEACHING/Talk_diffusion_models.pdf)
+[4] Risser, L. [Diffusion Models](http://laurent.risser.free.fr/TEACHING/Talk_diffusion_models.pdf) Slides
 
-[5] [pytorch_diffusion](https://github.com/pesser/pytorch_diffusion) — Pesser, P. GitHub repository.
+[5] Pesser, P. [pytorch_diffusion](https://github.com/pesser/pytorch_diffusion) - GitHub repository.
+
+[6] Thomine, S. [Modèles de Diffusion](https://simonthomine.github.io/CoursDeepLearning/fr/11_ModelesGeneratifs/07_DiffusionModels.html) - Cours Deep Learning.
 
