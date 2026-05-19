@@ -21,7 +21,7 @@ model:
 
 diffusion:
   timesteps: 1000
-  noise_schedule: cosine
+  noise_schedule: linear
   prediction_type: epsilon
   loss_type: mse
 
@@ -44,4 +44,5 @@ evaluation:
   enabled: false
   visualization:
     show_denoising_process: false
+
 
