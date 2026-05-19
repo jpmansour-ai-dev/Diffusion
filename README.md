@@ -48,7 +48,7 @@ $$\bar{\alpha}_t = \frac{f(t)}{f(0)}, \quad f(t) = \cos\left(\frac{t/T + s}{1 + 
 
 where $s$ is a small, to prevent $\beta_t$ from being too small near $t = 0$, as
 
-$$\beta_t = 1 - \frac{\bar{\alpha}t}{\bar{\alpha}{t-1}}$$
+$$\beta_t = 1 - \frac{\bar{\alpha}_t}{\bar{\alpha}_{t-1}}$$
 
 The paper showed, that the cosine schedule yields better results, especially for small resolution such as 64x64, which is the resolution adopted in this implementation.
 
