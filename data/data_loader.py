@@ -33,7 +33,7 @@ class CelebADataset(Dataset):
         return self.transform(self.dataset[sample_index]["image"].convert("RGB"))
 
 
-def get_celeba_loader(batch_size: int = 64) -> DataLoader:
+def get_celeba_loader(batch_size: int = 8) -> DataLoader:
     """Returns a DataLoader of preprocessed CelebA images."""
     dataset = CelebADataset(split="train", image_size=resolution)
     return DataLoader(
