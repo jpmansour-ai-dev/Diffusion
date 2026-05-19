@@ -63,17 +63,21 @@ The paper showed, that the cosine schedule yields better results, especially for
 - Each timestep $t = 1, \dots, T$ is embedded into a 128-dimensional vector via a Sinusoidal Embedding, then projected to 512d by a 2-layer MLP. The 512d space is large enough to always project down into any channel count in the network (max 512ch), and the MLP makes the embedding learnable.
 - Encoder : 4 levels of operations at 64x64, 32x32, 16x16, 8x8 (Downsampling with stride-2 conv2D), . At each level, there is 2 residual blocks, each containing GroupNorm -> SiLU -> Conv2d, skip connection and attention block at each resoluton 16x16 and 8x8.
 - Bottleneck : ResBlock -> AttentionBlock -> ResBlock at the lowest resolution (8x8, 512ch)
-- Decoder : Mirrors the encoder across 4 levels (8x8, 16x16, 32x32, 64x64). At each level, the feature map is upsampled (Conv2D to keep it learnable), concatenated with the encoder's matching skip connection, then passed through 3 residual blocks (one extra to process the downsampling skip). Attention is applied at 8x8 and 16x16, same as the encoder
+- Decoder : Same as the encoder across 4 levels (8x8, 16x16, 32x32, 64x64). At each level, the feature map is upsampled (Conv2D to keep it learnable), concatenated with the encoder's matching skip connection, then passed through 3 residual blocks (one extra to process the downsampling skip). Attention is applied at 8x8 and 16x16, same as the encoder
 - Output : GroupNorm -> SiLU -> Conv2d (64ch to 3ch), prediction of the noise $\varepsilon$
 
 ![net](assets/net.png)
+
+<br>
 
 **Importance of Group Normalization:**
 
 When training the U-Net, each sample in the batch is at a different timestep, so statistics across the batch are unstable. Training large diffusion models demands small batch sizes due to memory constraints, making batch statistics even noisier. Unlike BatchNorm which normalizes across the batch for each fixed feature map, GroupNorm splits the feature map into groups of channels and normalizes within each group across channels, height and width, making it independent of batch size.
 
-![Group Normalization](assets/grp_norm.png)
+![Group Normalization](assets/grp_norm.jpg)
 
-### Dataset:
+<br>
 
-The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. 
+## Dataset:
+
+The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. They are fed to the model in batches of 64 during training. Since diffusion is a type of self-supervised learning algorithm, 
