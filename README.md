@@ -5,9 +5,9 @@ Denoising Diffusion Probabilistic Models were first introduced in 2020 in the or
 The aim here is to give a Pytorch demonstration of what diffusion models are capable of, by training a relatively small prediction noise neural network engine, but also to get a solid understanding of how these models operate under the hood, and the brilliancy behind its simplicity. For reference, the official implementation of diffusion models is accessible here: [Official GitHub Repository](https://github.com/hojonathanho/diffusion). In addition, the implementation provided here is based heavily on this [Repository](https://github.com/lucidrains/denoising-diffusion-pytorch)
 
 ## Concept 
-The idea consists on smoothly perturbating the original image data $x_0$ by iteratively adding Gaussian noise until reaching pure noise $x_T$, then learning to reverse this process to generate new data from pure noise. Here is what the complete diffusion looks like:
+The idea consists on smoothly perturbating the original image data $x_0$ by iteratively adding Gaussian noise until reaching pure noise $x_T$, then learning to reverse this process to generate new data from pure noise. Here is what the complete diffusion process looks like:
 
-![Diffusion](assets/diffusion.png)
+![Diffusion1](assets/diff.png)
 
 ### Forward Diffusion:
 
@@ -39,6 +39,9 @@ While $q(x_{t-1} \mid x_t)$ is unknown, the $q(x_{t-1} \mid x_t, x_0)$ is known 
 
 $$p_{\theta}(x_{t-1} \mid x_t) = \mathcal{N}(x_{t-1}\ ; \mu_\theta(x_t, t),\ \tilde\beta_t \mathbf{I})$$
 
+![Diffusion2](assets/diffusion.png)
+
+<br>
 
 **Noise Schedule:**
 
@@ -80,4 +83,4 @@ When training the U-Net, each sample in the batch is at a different timestep, so
 
 ## Dataset:
 
-The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. They are fed to the model in batches of 64 during training. Since diffusion is a type of self-supervised learning algorithm, 
+The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a dataset of over 200,000 celebrity face images at 64×64 resolution. They are fed to the model in batches of 64 during training. <br> Since diffusion is a type of self-supervised learning algorithm, 
