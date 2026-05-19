@@ -19,7 +19,7 @@ def fit(
 
     losses = []
     parameters = sum(p.numel() for p in model.parameters())                        
-    print(f"{model.__class__.__name__} U-Net learnable parameters count: {parameters:,}")
+    print(f"{model.__class__.__name__} learnable parameters count: {parameters:,}")
 
     for epoch in range(epochs):
         total_loss, num_batches = 0, 0
