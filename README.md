@@ -92,6 +92,8 @@ The model is trained on [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.htm
 
 Diffusion models are objectively inherently expensive to train. For the sake of this demonstration, image resolution is reduced to 64×64, the maximum number of channels in the UNet is set to 256, and training is run for 65 epochs. The learning rate is set to $2 \times 10^{-4}$, following the original paper. The figure below shows 4 generated samples captured across 6 denoising timesteps:
 
+![Demo](assets/demo.png)
+
 ## References
 
 [1] Ho, J., Jain, A., & Abbeel, P. (2020). [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239)
